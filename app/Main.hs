@@ -296,8 +296,8 @@ pt x y = mc x <> "," <> mc y
 ----------------------------------------------------------------------------
 -- View
 ----------------------------------------------------------------------------
-viewModel :: props -> Model -> View Model Action
-viewModel _ m@Model{..} =
+viewModel :: Model -> View () () Model Action
+viewModel m@Model{..} =
   H.div_
     [ CSS.style_
         [ CSS.margin "0"
@@ -316,7 +316,7 @@ viewModel _ m@Model{..} =
     , helpBar
     ]
 
-repoBar :: View Model Action
+repoBar :: View () () Model Action
 repoBar =
   H.div_
     [ CSS.style_
@@ -334,7 +334,7 @@ repoBar =
         [ text "github.com/haskell-miso/miso-asteroid" ]
     ]
 
-hudBar :: Int -> Int -> GameState -> View Model Action
+hudBar :: Int -> Int -> GameState -> View () () Model Action
 hudBar sc lv st =
   H.div_
     [ CSS.style_
@@ -353,7 +353,7 @@ hudBar sc lv st =
     statusMsg Dead    = "GAME OVER — press R"
     statusMsg Victory = "YOU WIN! — press R"
 
-helpBar :: View Model Action
+helpBar :: View () () Model Action
 helpBar =
   H.div_
     [ CSS.style_
@@ -365,7 +365,7 @@ helpBar =
         ] ]
     [ text "\x2190\x2192 Rotate   \x2191 Thrust   SPACE Shoot   R Restart" ]
 
-gameCanvas :: Model -> View Model Action
+gameCanvas :: Model -> View () () Model Action
 gameCanvas Model{..} =
   SE.svg_
     [ HP.width_   (mc sw)
@@ -381,7 +381,7 @@ gameCanvas Model{..} =
     ++ [ renderShip _ship _invincible ]
     ++ gameOverlay _gs
 
-renderShip :: Ship -> Int -> View Model Action
+renderShip :: Ship -> Int -> View () () Model Action
 renderShip Ship{..} inv =
   let a   = _sang
       -- Nose
@@ -406,7 +406,7 @@ renderShip Ship{..} inv =
        , SP.opacity_     op
        ]
 
-renderAst :: Asteroid -> View Model Action
+renderAst :: Asteroid -> View () () Model Action
 renderAst Asteroid{..} =
   SE.circle_
     [ SP.cx_          (mc _ax)
@@ -417,7 +417,7 @@ renderAst Asteroid{..} =
     , SP.strokeWidth_ "1.5"
     ]
 
-renderBullet :: Bullet -> View Model Action
+renderBullet :: Bullet -> View () () Model Action
 renderBullet Bullet{..} =
   SE.circle_
     [ SP.cx_   (mc _bx)
@@ -426,7 +426,7 @@ renderBullet Bullet{..} =
     , SP.fill_ "#ff0"
     ]
 
-gameOverlay :: GameState -> [View Model Action]
+gameOverlay :: GameState -> [View () () Model Action]
 gameOverlay Playing = []
 gameOverlay st =
   let (msg, col) = case st of
